@@ -26,22 +26,15 @@
             window.location.href = "myturntable://boxauth?code=" + code;
         }
 
-        // 2) Try to close the window (may fail on iOS/Android)
+        // 2) Try to close the window (desktopon néha működik)
         setTimeout(() => {
             window.close();
         }, 1200);
 
-        // 3) Fallback: navigate back so the user doesn't stay stuck
-        // Works on Android, sometimes on iOS
+        // 3) Ha nem záródott be, irány a saját weboldalad
         setTimeout(() => {
-            history.go(-1);
-        }, 2200);
-
-        // 4) Final fallback: redirect to a neutral page
-        // Ensures the user never stays on this redirect page
-        setTimeout(() => {
-            window.location.href = "https://account.box.com/logout";
-        }, 3500);
+            window.location.href = "https://myturntable.eu";
+        }, 2500);
     </script>
 </body>
 </html>
