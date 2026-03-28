@@ -17,24 +17,30 @@
     <p>Login successful. You can close this window.</p>
 
     <script>
-        // Extract the ?code= parameter from the URL
-        const params = new URLSearchParams(window.location.search);
-        const code = params.get("code");
+    // Extract the ?code= parameter from the URL
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get("code");
 
-        // 1) Trigger the deep link back to the app
-        if (code) {
+    // 1) Deep link próbálkozások (új + fallback)
+    if (code) {
+        // 🔥 ÚJ (Unity 6.3 + iOS stabil)
+        window.location.href = "myturntable://boxauth/" + code;
+
+        // 🔁 FALLBACK régi kliensekhez
+        setTimeout(() => {
             window.location.href = "myturntable://boxauth?code=" + code;
-        }
+        }, 500); // ⏱️ kritikus delay
+    }
 
-        // 2) Try to close the window (desktopon néha működik)
-        setTimeout(() => {
-            window.close();
-        }, 1200);
+    // 2) Try to close the window (desktopon néha működik)
+    setTimeout(() => {
+        window.close();
+    }, 1200);
 
-        // 3) Ha nem záródott be, irány a saját weboldalad
-        setTimeout(() => {
-            window.location.href = "https://myturntable.eu";
-        }, 2500);
+    // 3) Ha nem záródott be, irány a saját weboldalad
+    setTimeout(() => {
+        window.location.href = "https://myturntable.eu";
+    }, 2500);
     </script>
 </body>
 </html>
