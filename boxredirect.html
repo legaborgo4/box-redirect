@@ -21,15 +21,9 @@
     const params = new URLSearchParams(window.location.search);
     const code = params.get("code");
 
-    // 1) Deep link próbálkozások (új + fallback)
+    // 1) Trigger the deep link back to the app
     if (code) {
-        // 🔥 ÚJ (Unity 6.3 + iOS stabil)
-        window.location.href = "myturntable://boxauth/" + code;
-
-        // 🔁 FALLBACK régi kliensekhez
-        setTimeout(() => {
             window.location.href = "myturntable://boxauth?code=" + code;
-        }, 500); // ⏱️ kritikus delay
     }
 
     // 2) Try to close the window (desktopon néha működik)
