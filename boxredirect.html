@@ -1,17 +1,51 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <title>Box Login Redirect</title>
+    <meta charset="UTF-8">
+    <title>Box Redirect</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        body {
-            font-family: sans-serif;
-            text-align: center;
-            margin-top: 40px;
-            color: #333;
+
+    <script>
+        function getQueryParam(name) {
+            const params = new URLSearchParams(window.location.search);
+            return params.get(name);
         }
-        a.button {
+
+        function isMobile() {
+            return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+        }
+
+        function redirectToApp() {
+            const code = getQueryParam('code');
+
+            if (!code) {
+                document.body.innerHTML = "<p>No auth code found.</p>";
+                return;
+            }
+
+            const deepLink = "myturntable://boxauth?code=" + encodeURIComponent(code);
+
+            if (isMobile()) {
+                // AUTOMATIKUS deep-link mobilon
+                window.location.href = deepLink;
+
+                // Biztonsági fallback: ha nem nyílik meg az app
+                setTimeout(() => {
+                    document.getElementById("fallback").style.display = "block";
+                }, 2000);
+            } else {
+                // Desktop fallback
+                document.getElementById("desktop").style.display = "block";
+                document.getElementById("code").innerText = code;
+            }
+        }
+
+        window.onload = redirectToApp;
+    </script>
+
+    <style>
+        body { font-family: sans-serif; text-align: center; margin-top: 40px; }
+        .button {
             display: inline-block;
             padding: 14px 22px;
             background: #007aff;
@@ -23,29 +57,18 @@
         }
     </style>
 </head>
+
 <body>
+    <p>Redirecting to MyTurntable...</p>
 
-    <p>Login successful.</p>
-    <p>Tap the button below to return to the app.</p>
+    <div id="fallback" style="display:none;">
+        <p>If the app did not open automatically, tap below:</p>
+        <a class="button" href="#" onclick="window.location.href = deepLink;">Open MyTurntable</a>
+    </div>
 
-    <script>
-        const params = new URLSearchParams(window.location.search);
-        const code = params.get("code");
-
-        function openApp() {
-            if (code) {
-                // 1) Open the app via deeplink (user-initiated → no popup)
-                window.location.href = "myturntable://boxauth?code=" + code;
-            }
-
-            // 2) After 1 second, navigate to your main website
-            setTimeout(() => {
-                window.location.href = "https://myturntable.eu";
-            }, 1000);
-        }
-    </script>
-
-    <a class="button" onclick="openApp()">Return to MyTurntable</a>
-
+    <div id="desktop" style="display:none;">
+        <p>Auth code (desktop mode):</p>
+        <pre id="code"></pre>
+    </div>
 </body>
 </html>
